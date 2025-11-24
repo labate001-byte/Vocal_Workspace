@@ -18,7 +18,7 @@ pip install google-generativeai python-dotenv
 ```
 3. Iserisci la chiave api
 ```
-nano /src/turtlebot_controller/script_python/.env
+nano src/turtlebot_controller/script_python/.env
 ```
 4. Avvia tutto
 
