@@ -4,19 +4,29 @@ Questo è un fork del workspace TurtleBot3 arricchito con un sistema di controll
 
 🚀 Installazione e Avvio Rapido
 
-Non serve configurare manualmente il workspace. Ho creato uno script che installa le dipendenze, compila il codice e avvia la simulazione automaticamente.
+Non serve configurare manualmente il workspace. Lo script installa le dipendenze, compila il codice e avvia la simulazione automaticamente.
 
 1. Clona la repository
+```
+git clone https://github.com/labate001-byte/Vocal_Workspace.git
+cd Vocal_Workspace
+```
 
-git clone [https://github.com/TUO_USERNAME/turtlebot_workspace.git](https://github.com/TUO_USERNAME/turtlebot_workspace.git)
-cd turtlebot_workspace
-
-
-2. Avvia tutto
+2. Installa le dipendeze dell'api Gemini
+```
+pip install google-generativeai python-dotenv
+```
+3. Iserisci la chiave api
+```
+nano /src/turtlebot_controller/script_python/.env
+```
+4. Avvia tutto
 
 Esegui semplicemente lo script universale:
 
+```
 bash avvio/Avvio.sh
+```
 
 
 Lo script farà tutto da solo:
@@ -33,12 +43,11 @@ Lo script farà tutto da solo:
 
 Una volta avviato il nodo vocale (terminale "Comando Vocale"), puoi dire:
 
-"Vieni qui": Il robot verrà verso di te (o eseguirà la logica programmata).
-
-(Aggiungi qui altri comandi se ne hai)
+"Vieni qui" o altri comandi di uguale significato: Gemini deciderà se il comando è valido in base al contesto
 
 🛠️ Requisiti
 
 Ubuntu 22.04
 
-ROS2 Humble
+Seguire la guida originale di Tetano02
+

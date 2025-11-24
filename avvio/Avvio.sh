@@ -93,8 +93,13 @@ sleep 8
 cd "$SCRIPT_DIR"
 
 if [ -f "start_nodes.sh" ]; then
-    echo "🧠 Avvio start_nodes.sh..."
+    echo "🧠 Trovato start_nodes.sh."
     chmod +x start_nodes.sh
+    
+    echo "⏳ Attendo 10 secondi per permettere al sistema di stabilizzarsi..."
+    sleep 10
+    
+    echo "🚀 Avvio ora start_nodes.sh..."
     # --- MODIFICA QUI: Passiamo il WORKSPACE_PATH come argomento ---
     ./start_nodes.sh "$WORKSPACE_PATH"
 else

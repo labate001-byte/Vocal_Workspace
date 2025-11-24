@@ -3,7 +3,12 @@ build/
 devel/
 install/
 logs/
+log/
 
 # File temporanei
 *.pyc
+*.txt
 *~
+# Variabili d'ambiente e chiavi segrete
+.env
+.env.local

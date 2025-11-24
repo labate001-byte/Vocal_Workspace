@@ -1,0 +1,61 @@
+[1.197s] Invoking command in '/home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller': PYTHONPATH=/home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/build --no-deps symlink_data
+[1.650s] running develop
+[1.957s] running egg_info
+[1.957s] creating turtlebot_controller.egg-info
+[1.957s] writing turtlebot_controller.egg-info/PKG-INFO
+[1.957s] writing dependency_links to turtlebot_controller.egg-info/dependency_links.txt
+[1.958s] writing entry points to turtlebot_controller.egg-info/entry_points.txt
+[1.958s] writing requirements to turtlebot_controller.egg-info/requires.txt
+[1.958s] writing top-level names to turtlebot_controller.egg-info/top_level.txt
+[1.959s] writing manifest file 'turtlebot_controller.egg-info/SOURCES.txt'
+[1.963s] reading manifest file 'turtlebot_controller.egg-info/SOURCES.txt'
+[1.965s] writing manifest file 'turtlebot_controller.egg-info/SOURCES.txt'
+[1.966s] running build_ext
+[1.967s] Creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/python3.10/site-packages/turtlebot-controller.egg-link (link to .)
+[1.969s] Installing move_turtle script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.969s] Installing move_turtle_AB script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.969s] Installing turtle_csv_handler script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.970s] Installing turtle_distance_publisher script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.970s] Installing turtle_move_status_data script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.970s] Installing turtle_position_data script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.970s] Installing turtle_velocity_data script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.970s] Installing voice_interface script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+[1.971s] 
+[1.971s] Installed /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller
+[1.971s] running symlink_data
+[1.971s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/ament_index
+[1.972s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/ament_index/resource_index
+[1.972s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/ament_index/resource_index/packages
+[1.972s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/resource/turtlebot_controller -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/ament_index/resource_index/packages
+[1.972s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/package.xml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller
+[1.972s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.972s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/cloned_multi_tb3_simulation_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.973s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/slam_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.973s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/navigation_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.973s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/rviz_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.973s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/bringup_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.973s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/unique_multi_tb3_simulation_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.973s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/localization_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.974s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/tb3_simulation_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.974s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/launch/tb3_santanna_launch.py -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/launch
+[1.974s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/maps
+[1.974s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/maps/planimetria_stanza.yaml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/maps
+[1.974s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/maps/planimetria_stanza_rotated.pgm -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/maps
+[1.974s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/maps/turtlebot3_world.pgm -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/maps
+[1.975s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/maps/turtlebot3_world.yaml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/maps
+[1.975s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/maps/planimetria_stanza.pgm -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/maps
+[1.975s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/params
+[1.975s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/params/nav2_multirobot_params_all.yaml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/params
+[1.975s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/params/nav2_multirobot_params_1.yaml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/params
+[1.975s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/params/nav2_multirobot_params_2.yaml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/params
+[1.975s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/params/nav2_params.yaml -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/params
+[1.975s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/urdf
+[1.976s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/urdf/turtlebot3_waffle.urdf -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/urdf
+[1.976s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/worlds
+[1.976s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/worlds/waffle.model -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/worlds
+[1.976s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/worlds/world_planimetria.model -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/worlds
+[1.976s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/worlds/world_only.model -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/worlds
+[1.976s] creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/rviz
+[1.977s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/rviz/nav2_namespaced_view.rviz -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/rviz
+[1.977s] symbolically linking /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/rviz/nav2_default_view.rviz -> /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/share/turtlebot_controller/rviz
+[2.030s] Invoked command in '/home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller' returned '0': PYTHONPATH=/home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller/build --no-deps symlink_data

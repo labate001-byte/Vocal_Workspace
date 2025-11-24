@@ -1,0 +1,22 @@
+running develop
+running egg_info
+writing turtlebot_controller.egg-info/PKG-INFO
+writing dependency_links to turtlebot_controller.egg-info/dependency_links.txt
+writing entry points to turtlebot_controller.egg-info/entry_points.txt
+writing requirements to turtlebot_controller.egg-info/requires.txt
+writing top-level names to turtlebot_controller.egg-info/top_level.txt
+reading manifest file 'turtlebot_controller.egg-info/SOURCES.txt'
+writing manifest file 'turtlebot_controller.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/python3.10/site-packages/turtlebot-controller.egg-link (link to .)
+Installing move_turtle script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing move_turtle_AB script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing turtle_csv_handler script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing turtle_distance_publisher script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing turtle_move_status_data script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing turtle_position_data script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing turtle_velocity_data script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+Installing voice_interface script to /home/leo/Desktop/24 novembre/Vocal_Workspace/install/turtlebot_controller/lib/turtlebot_controller
+
+Installed /home/leo/Desktop/24 novembre/Vocal_Workspace/build/turtlebot_controller
+running symlink_data
