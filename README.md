@@ -25,6 +25,7 @@ nano src/turtlebot_controller/script_python/.env
 Esegui semplicemente lo script universale:
 
 ```
+cd ../../..
 bash avvio/Avvio.sh
 ```
 
