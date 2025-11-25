@@ -33,9 +33,17 @@ class VoiceInterface(Node):
         self.recognizer = sr.Recognizer()
         
         # --- CONFIGURAZIONE PER ALTA SENSIBILITÀ ---
+        # 1. Soglia Energia: Più bassa = sente sussurri, ma più rischio rumore.
+        # Lasciamo dynamic=True ma abbassiamo il punto di partenza.
         self.recognizer.energy_threshold = 200 
         self.recognizer.dynamic_energy_threshold = True 
+        
+        # 2. Pause Threshold: CRUCIALE per lingue complesse.
+        # Definisce quanto silenzio deve passare prima di considerare la frase "finita".
+        # 1.2 secondi permette pause naturali mentre si cerca la parola giusta in un'altra lingua.
         self.recognizer.pause_threshold = 1.2 
+        
+        # 3. Non-speaking duration: quanto buffer di silenzio tenere prima e dopo.
         self.recognizer.non_speaking_duration = 0.4
 
         api_key = os.getenv("GEMINI_API_KEY")
@@ -44,40 +52,43 @@ class VoiceInterface(Node):
         else:
             genai.configure(api_key=api_key)
             self.model = genai.GenerativeModel('models/gemini-2.0-flash-lite')
-            self.get_logger().info("Gemini Configurato (Modalità: Letto & Base)")
+            self.get_logger().info("Gemini Configurato (Modalità Alta Precisione)")
 
         with suppress_stderr():
+            # Sample rate 16000 è nativo per molti modelli STT, migliora la qualità
             self.microphone = sr.Microphone(sample_rate=16000)
         
-        self.get_logger().info("In ascolto... (Comandi: 'Vieni a letto', 'Torna alla base')")
+        self.get_logger().info("In ascolto...")
         self.timer = self.create_timer(0.1, self.listen_loop)
 
     def ask_gemini_audio(self, audio_data):
         try:
+            # --- FILTRO RIDOTTO AL MINIMO ---
             raw_data = audio_data.get_raw_data()
+            # 8000 bytes a 16kHz/16bit sono solo ~0.25 secondi.
+            # Scartiamo solo i "click" brevissimi, lasciamo passare quasi tutto il parlato.
             if len(raw_data) < 8000: 
                 return None
 
             wav_bytes = audio_data.get_wav_data(convert_rate=16000, convert_width=2)
 
-            # --- PROMPT AGGIORNATO PER 2 COMANDI ---
+            # --- PROMPT OTTIMIZZATO FONETICAMENTE ---
             prompt = """
-            Analizza l'audio multilingua (Italiano, Hindi, Inglese, ecc.).
+            Analizza l'audio fornito. Potrebbe essere in QUALSIASI lingua (Hindi, Italiano, Inglese, ecc.).
             
-            Devi classificare l'intento dell'utente in una di queste 2 categorie:
-            
-            1. VIENI_LETTO: L'utente chiede al robot di venire al letto, avvicinarsi al paziente o raggiungerlo.
-               Keywords: "Vieni a letto", "Come to bed", "Come here", "Vieni qui", "Bedside".
-               
-            2. TORNA_BASE: L'utente chiede al robot di tornare alla base, alla stazione di ricarica o andare via.
-               Keywords: "Torna alla base", "Go home", "Return to base", "Go back", "Wapas jao".
+            Se l'audio non è chiaro, cerca di interpretare i suoni foneticamente.
+            Esempio: "idhar aao" (Hindi), "come here" (Eng), "vieni qui" (Ita).
             
             Restituisci SOLO un JSON:
             {
-                "detected_language": "codice lingua (es. it, en, hi)",
-                "transcription": "parole esatte udite",
-                "command": "VIENI_LETTO" oppure "TORNA_BASE" oppure "NULL"
+                "detected_language": "codice lingua (es. hi, it, en)",
+                "transcription": "trascrizione fedele di ciò che hai sentito",
+                "translation_en": "traduzione letterale in inglese",
+                "command": "VIENI_QUI" oppure "NULL"
             }
+            
+            Regola command:
+            IMPOSTA "VIENI_QUI" SE E SOLO SE l'intento è inequivocabilmente chiamare il robot a sé.
             """
             
             response = self.model.generate_content([
@@ -87,17 +98,23 @@ class VoiceInterface(Node):
             
             text = response.text.strip()
             if text.startswith("```json"): text = text[7:-3]
+            # Gestione caso in cui il modello risponda con markdown parziale
             text = text.replace("```", "") 
             
             return json.loads(text)
 
         except Exception:
+            # Ignoriamo silenziosamente gli errori di parsing per tenere il log pulito
             return None
 
     def listen_loop(self):
         with self.microphone as source:
             try:
+                # Rimossa calibrazione continua per evitare loop
+                
                 with suppress_stderr():
+                    # Aumentato timeout: ascolta segmenti più lunghi (fino a 10s)
+                    # per non tagliare frasi complesse in Hindi/altre lingue.
                     audio = self.recognizer.listen(source, timeout=None, phrase_time_limit=8)
                 
                 result = self.ask_gemini_audio(audio)
@@ -110,24 +127,22 @@ class VoiceInterface(Node):
                     if transcription:
                         self.get_logger().info(f"🎤 [{lang}]: '{transcription}' -> {intent}")
 
-                    # --- LOGICA DI PUBBLICAZIONE ---
-                    if intent == "VIENI_LETTO":
+                    if intent == "VIENI_QUI":
                         msg = String()
-                        msg.data = "vieni_letto"
+                        msg.data = "vieni_qui"
                         self.publisher_.publish(msg)
-                        self.get_logger().info("🚀 INVIO: vieni_letto")
-                    
-                    elif intent == "TORNA_BASE":
-                        msg = String()
-                        msg.data = "torna_base"
-                        self.publisher_.publish(msg)
-                        self.get_logger().info("🏠 INVIO: torna_base")
+                        # Feedback visivo importante per sapere che ha capito
+                        self.get_logger().info("🚀 ESECUZIONE COMANDO")
 
+                # --- THROTTLING STRATEGICO ---
+                # Manteniamo una pausa minima per salvare le API, ma
+                # ridotta a 1 secondo per sembrare più reattivo.
                 time.sleep(1.0) 
 
             except sr.WaitTimeoutError:
                 pass 
             except Exception as e:
+                # Errori critici vengono loggati, ma non fermano il nodo
                 self.get_logger().warn(f"Warning loop: {e}")
                 time.sleep(0.5)
 
