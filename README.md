@@ -42,8 +42,13 @@ Lo script farà tutto da solo:
 🎙️ Comandi Vocali Disponibili
 
 Una volta avviato il nodo vocale (terminale "Comando Vocale"), puoi dire:
-
-"Vieni qui" o altri comandi di uguale significato: Gemini deciderà se il comando è valido in base al contesto
+La wake word "PIPPO" mette il robot in ascoltoin TUTTE le lingue supportate:
+-vieni a letto
+-vai in cucina
+-torna alla base
+-vai in bagno 
+-vai al divano
+sarà poi gemini che in base al contesto deciderà se far muovere il robot.
 
 🛠️ Requisiti
 
