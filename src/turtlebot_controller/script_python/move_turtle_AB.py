@@ -6,7 +6,7 @@ from rclpy.action import ActionClient
 from std_msgs.msg import Bool, String
 import time
 
-# File esterni (Assicurati che esistano nella tua cartella)
+# File esterni
 from script_python.turtle_estimate_position import publish_initial_pose
 from script_python.patient_button_control import button
 
@@ -25,22 +25,40 @@ class GoalNavigation(Node):
             10
         )
 
-        # Coordinate Base (Home)
+        # --- DEFINIZIONE COORDINATE ---
+        
+        # Base (Home)
         self.home_x = -2.5
         self.home_y = -2.5
         self.home_theta = 0.0
 
-        # Coordinate Letto (Paziente)
+        # Letto (Paziente)
         self.bed_x = -1.0
         self.bed_y = 3.5
         self.bed_theta = 0.0
 
-        self.get_logger().info("Navigazione pronta. Comandi: 'vieni a letto' / 'torna alla base'")
+        # Divano
+        self.sofa_x = -1.5
+        self.sofa_y = -3.75
+        self.sofa_theta = 0.0
+
+        # Bagno
+        self.bath_x = 1.0
+        self.bath_y = -0.5
+        self.bath_theta = 0.0
+
+        # Cucina
+        self.kitchen_x = -0.5
+        self.kitchen_y = -1.0
+        self.kitchen_theta = 0.0
+
+        self.get_logger().info("Navigazione pronta. In attesa di comandi vocali...")
 
     def voice_callback(self, msg):
         command = msg.data
         self.get_logger().info(f"Ricevuto comando: {command}")
 
+        # Gestione Destinazioni
         if command == "vieni_letto":
             self.get_logger().info("🚑 Vado al LETTO del paziente...")
             self.send_goal(self.bed_x, self.bed_y, self.bed_theta)
@@ -48,14 +66,27 @@ class GoalNavigation(Node):
         elif command == "torna_base":
             self.get_logger().info("🏠 Torno alla BASE...")
             self.send_goal(self.home_x, self.home_y, self.home_theta)
+            
+        elif command == "vai_divano":
+            self.get_logger().info("🛋️ Vado al DIVANO...")
+            self.send_goal(self.sofa_x, self.sofa_y, self.sofa_theta)
+            
+        elif command == "vai_bagno":
+            self.get_logger().info("🚽 Vado in BAGNO...")
+            self.send_goal(self.bath_x, self.bath_y, self.bath_theta)
+            
+        elif command == "vai_cucina":
+            self.get_logger().info("🍳 Vado in CUCINA...")
+            self.send_goal(self.kitchen_x, self.kitchen_y, self.kitchen_theta)
 
     def send_goal(self, x, y, theta):
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose.header.frame_id = 'map'
         goal_msg.pose.header.stamp = self.get_clock().now().to_msg()
-        goal_msg.pose.pose.position.x = x
-        goal_msg.pose.pose.position.y = y
-        goal_msg.pose.pose.orientation.z = theta 
+        goal_msg.pose.pose.position.x = float(x)
+        goal_msg.pose.pose.position.y = float(y)
+        goal_msg.pose.pose.orientation.z = float(theta)
+        goal_msg.pose.pose.orientation.w = 1.0 # Orientamento valido di default
 
         self.get_logger().info(f'Invio goal: x={x}, y={y}')
         
@@ -78,18 +109,15 @@ class GoalNavigation(Node):
         self._get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
-        result = future.result().result
+        # Result unused but kept for structure
+        _ = future.result().result
         self.get_logger().info('Destinazione raggiunta!')
         
         msg = Bool()
         msg.data = False
         self.move_status_publisher.publish(msg)
 
-        # Eseguiamo la simulazione pulsante se siamo arrivati (opzionale)
-        # Nota: Ho rimosso il ritorno automatico per permettere il controllo vocale completo.
-        # Se siamo al letto, attiviamo l'interazione pulsante.
-        # Possiamo dedurre dove siamo in base all'ultimo comando, ma per semplicità
-        # chiamiamo button() che gestisce la logica interna o è solo una demo.
+        # Attivazione logica pulsante/interazione (opzionale)
         button(True) 
         
         self.get_logger().info('In attesa del prossimo comando vocale...')

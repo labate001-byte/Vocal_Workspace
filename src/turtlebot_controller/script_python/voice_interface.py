@@ -40,7 +40,7 @@ class VoiceInterface(Node):
             
         genai.configure(api_key=api_key)
         
-        # --- MODIFICA 1: USIAMO GEMINI 2.5 FLASH (Più stabile del Lite) ---
+        # Modello Gemini
         self.model = genai.GenerativeModel('models/gemini-2.5-flash')
 
         try:
@@ -54,7 +54,7 @@ class VoiceInterface(Node):
             self.recognizer.adjust_for_ambient_noise(source, duration=2.0)
             
         self.get_logger().info(f"✅ Pronti. Soglia: {self.recognizer.energy_threshold:.0f}")
-        self.get_logger().info("ℹ️  Logica: 'Pippo' -> Audio a Gemini 1.5 Flash.")
+        self.get_logger().info("ℹ️  Logica: 'Pippo' -> Audio a Gemini.")
 
         self.recognizer.dynamic_energy_threshold = True
         self.recognizer.pause_threshold = 0.6 
@@ -67,21 +67,23 @@ class VoiceInterface(Node):
         try:
             wav_bytes = audio_data.get_wav_data(convert_rate=16000, convert_width=2)
             
-            # --- MODIFICA 2: PROMPT SPECIFICO "VIENI QUI" vs "VIENI A LETTO" ---
+            # --- MODIFICA AGGIORNATA: NUOVI LUOGHI ---
             prompt = """
-            Ascolta questo audio e classifica l'intento.
+            Ascolta questo audio e classifica l'intento per la navigazione del robot.
             
             Regole TASSATIVE:
             1. Ignora la parola "Pippo".
-            2. Il comando "VIENI_LETTO" deve essere attivato SOLO se l'utente menziona esplicitamente il "LETTO" o "BED".
-               - "Vieni a letto" -> VIENI_LETTO (SI)
-               - "Come to bed" -> VIENI_LETTO (SI)
-               - "Vieni qui" -> NULL (NO - Troppo generico)
-               - "Avvicinati" -> NULL (NO)
-            3. Il comando "TORNA_BASE" vale per ritorni alla base/ricarica.
+            2. Classifica i comandi in base alla destinazione richiesta:
+               - "Letto", "Bed" -> VIENI_LETTO
+               - "Base", "Ricarica", "Home" -> TORNA_BASE
+               - "Divano", "Sofa" -> VAI_DIVANO
+               - "Bagno", "Toilette", "WC" -> VAI_BAGNO
+               - "Cucina", "Kitchen" -> VAI_CUCINA
+               
+            3. Se la richiesta è generica (es. "vieni qui", "avvicinati") o non chiara -> NULL.
             
             Restituisci SOLO JSON:
-            { "detected_language": "codice", "command": "VIENI_LETTO" oppure "TORNA_BASE" oppure "NULL" }
+            { "detected_language": "codice", "command": "VIENI_LETTO" | "TORNA_BASE" | "VAI_DIVANO" | "VAI_BAGNO" | "VAI_CUCINA" | "NULL" }
             """
             
             response = self.model.generate_content(
@@ -104,12 +106,11 @@ class VoiceInterface(Node):
                 self.is_processing = True
                 
                 try:
-                    # Ascolta per max 6 secondi
                     audio_clip = self.recognizer.listen(source, timeout=1.0, phrase_time_limit=6)
                 except sr.WaitTimeoutError:
                     return 
 
-                # Check locale "Pippo" (Google Speech)
+                # Riconoscimento preliminare offline/rapido per la wake word
                 try:
                     rough_text = self.recognizer.recognize_google(audio_clip, language="it-IT").lower()
                 except sr.UnknownValueError:
@@ -120,28 +121,43 @@ class VoiceInterface(Node):
                 wake_words = ["pippo", "pipo", "peppo", "pippa", "people", "tipo", "ehi"]
                 
                 if any(w in rough_text for w in wake_words):
-                    self.get_logger().info(f"✅ Trigger 'Pippo' attivato! (Preliminare: '{rough_text}')")
+                    self.get_logger().info(f"✅ Trigger attivato: '{rough_text}'")
                     
-                    # Invio Audio a Gemini
                     result = self.send_audio_to_gemini(audio_clip)
                     
                     if result:
                         cmd = result.get("command", "NULL")
                         lang = result.get("detected_language", "?")
+                        msg = String()
                         
+                        # Gestione Comandi Aggiornata
                         if cmd == "VIENI_LETTO":
-                            msg = String()
                             msg.data = "vieni_letto"
                             self.publisher_.publish(msg)
-                            self.get_logger().info(f"🚀 [Gemini {lang}]: VIENI_LETTO (Comando specifico rilevato)")
+                            self.get_logger().info(f"🚑 [Gemini]: Destinazione LETTO")
                             
                         elif cmd == "TORNA_BASE":
-                            msg = String()
                             msg.data = "torna_base"
                             self.publisher_.publish(msg)
-                            self.get_logger().info(f"🏠 [Gemini {lang}]: TORNA_BASE")
+                            self.get_logger().info(f"🏠 [Gemini]: Destinazione BASE")
+
+                        elif cmd == "VAI_DIVANO":
+                            msg.data = "vai_divano"
+                            self.publisher_.publish(msg)
+                            self.get_logger().info(f"🛋️ [Gemini]: Destinazione DIVANO")
+
+                        elif cmd == "VAI_BAGNO":
+                            msg.data = "vai_bagno"
+                            self.publisher_.publish(msg)
+                            self.get_logger().info(f"🚽 [Gemini]: Destinazione BAGNO")
+
+                        elif cmd == "VAI_CUCINA":
+                            msg.data = "vai_cucina"
+                            self.publisher_.publish(msg)
+                            self.get_logger().info(f"🍳 [Gemini]: Destinazione CUCINA")
+
                         else:
-                            self.get_logger().info(f"✋ [Gemini {lang}]: Ignorato (Comando generico o non valido)")
+                            self.get_logger().info(f"✋ [Gemini]: Comando ignorato/generico ({cmd})")
                 
             except Exception as e:
                 self.get_logger().error(f"Loop crash: {e}")
