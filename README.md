@@ -16,7 +16,7 @@ cd Vocal_Workspace
 ```
 pip install google-generativeai python-dotenv
 ```
-3. Iserisci la chiave api
+3. Inserisci la chiave api
 ```
 nano src/turtlebot_controller/script_python/.env
 ```
@@ -43,11 +43,17 @@ Lo script farà tutto da solo:
 
 Una volta avviato il nodo vocale (terminale "Comando Vocale"), puoi dire:
 La wake word "PIPPO" mette il robot in ascoltoin TUTTE le lingue supportate:
+
 -vieni a letto
+
 -vai in cucina
+
 -torna alla base
--vai in bagno 
+
+-vai in bagno
+
 -vai al divano
+
 sarà poi gemini che in base al contesto deciderà se far muovere il robot.
 
 🛠️ Requisiti
