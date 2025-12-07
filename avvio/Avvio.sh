@@ -97,7 +97,7 @@ if [ -f "start_nodes.sh" ]; then
     chmod +x start_nodes.sh
     
     echo "⏳ Attendo 10 secondi per permettere al sistema di stabilizzarsi..."
-    sleep 10
+    sleep 20
     
     echo "🚀 Avvio ora start_nodes.sh..."
     # --- MODIFICA QUI: Passiamo il WORKSPACE_PATH come argomento ---

@@ -15,10 +15,10 @@ echo "Avvio nodi lavorando nella cartella: $WORKDIR"
 PREP_CMD="source /opt/ros/humble/setup.bash && cd \"$WORKDIR\" && source install/setup.bash"
 
 # 1️⃣ Nodo distanza
-gnome-terminal --title="Distanza" -- bash -c "$PREP_CMD && echo '✅ Nodo distanza avviato' && ros2 run turtlebot_controller turtle_distance_publisher; exec bash"
+#gnome-terminal --title="Distanza" -- bash -c "$PREP_CMD && echo '✅ Nodo distanza avviato' && ros2 run turtlebot_controller turtle_distance_publisher; exec bash"
 
 # 2️⃣ Nodo CSV
-gnome-terminal --title="CSV Handler" -- bash -c "$PREP_CMD && echo '✅ Nodo CSV avviato' && ros2 run turtlebot_controller turtle_csv_handler; exec bash"
+#gnome-terminal --title="CSV Handler" -- bash -c "$PREP_CMD && echo '✅ Nodo CSV avviato' && ros2 run turtlebot_controller turtle_csv_handler; exec bash"
 
 # 3️⃣ Nodo movimento
 gnome-terminal --title="Movimento" -- bash -c "$PREP_CMD && echo '✅ Nodo movimento avviato' && ros2 run turtlebot_controller move_turtle_AB; exec bash"
@@ -34,7 +34,7 @@ gnome-terminal --title="Comando Vocale" -- bash -c "$PREP_CMD && \
     exec bash"
 
 # 5️⃣ (opzionale) Terminale libero
-gnome-terminal --title="Terminale Libero" -- bash -c "$PREP_CMD && echo '🧩 Terminale libero per comandi ROS'; exec bash"
+#gnome-terminal --title="Terminale Libero" -- bash -c "$PREP_CMD && echo '🧩 Terminale libero per comandi ROS'; exec bash"
 
 echo "==========================================="
 echo "🔥 Tutti i nodi sono stati avviati."
