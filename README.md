@@ -16,11 +16,8 @@ cd Vocal_Workspace
 ```
 pip install google-generativeai python-dotenv
 ```
-3. Inserisci la chiave api
-```
-nano src/turtlebot_controller/script_python/.env
-```
-4. Avvia tutto
+
+3. Avvia tutto
 
 Esegui semplicemente lo script universale:
 
