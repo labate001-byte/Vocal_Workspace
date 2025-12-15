@@ -19,6 +19,40 @@ echo "📂 Root Workspace rilevata in: $WORKSPACE_PATH"
 echo "🔧 Preparazione dell'ambiente ROS2 Humble..."
 echo "==========================================="
 
+# --- GESTIONE API KEY GEMINI (NUOVO BLOCCO) ---
+TARGET_ENV_DIR="$WORKSPACE_PATH/src/turtlebot_controller/script_python"
+ENV_FILE="$TARGET_ENV_DIR/.env"
+
+echo
+echo "🔑 Controllo Configurazione API Key..."
+
+# Verifica se il file .env esiste
+if [ ! -f "$ENV_FILE" ]; then
+    echo "⚠️  File .env non trovato in: $TARGET_ENV_DIR"
+    echo "ℹ️  Il sistema vocale richiede una Google Gemini API Key."
+    echo ""
+    
+    # Richiesta input utente
+    read -p ">> Incolla qui la tua API Key e premi INVIO: " USER_KEY
+
+    # Verifica input non vuoto
+    if [ -z "$USER_KEY" ]; then
+        echo "❌ Errore: Nessuna chiave inserita. Impossibile proseguire."
+        exit 1
+    fi
+
+    # Creazione cartella se non esiste (sicurezza)
+    mkdir -p "$TARGET_ENV_DIR"
+
+    # Scrittura del file .env
+    echo "GEMINI_API_KEY=$USER_KEY" > "$ENV_FILE"
+    echo "✅ Chiave salvata con successo in: $ENV_FILE"
+    echo "   (Non ti verrà più richiesta ai prossimi avvii)"
+else
+    echo "✅ File .env trovato. Configurazione presente."
+fi
+echo "==========================================="
+
 # Source ROS2
 if [ -f /opt/ros/humble/setup.bash ]; then
     source /opt/ros/humble/setup.bash
@@ -100,7 +134,7 @@ if [ -f "start_nodes.sh" ]; then
     sleep 20
     
     echo "🚀 Avvio ora start_nodes.sh..."
-    # --- MODIFICA QUI: Passiamo il WORKSPACE_PATH come argomento ---
+    # Passiamo il WORKSPACE_PATH come argomento
     ./start_nodes.sh "$WORKSPACE_PATH"
 else
     echo "⚠️  start_nodes.sh non trovato."

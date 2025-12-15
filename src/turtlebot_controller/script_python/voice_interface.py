@@ -10,6 +10,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import speech_recognition as sr
 
+# Carica le variabili d'ambiente (dal file .env generato dall'altro script)
 load_dotenv()
 
 # --- CONFIGURAZIONE ---
@@ -33,14 +34,15 @@ class VoiceInterface(Node):
         self.publisher_ = self.create_publisher(String, 'voice_command', 10)
         self.recognizer = sr.Recognizer()
         
+        # --- CHECK API KEY (SOLO LETTURA) ---
         api_key = os.getenv("GEMINI_API_KEY")
+        
         if not api_key:
-            self.get_logger().error("ERRORE: API Key mancante!")
+            self.get_logger().error("❌ API KEY MANCANTE!")
+            self.get_logger().error("Assicurati di aver eseguito lo script di configurazione o di avere il file .env.")
             sys.exit(1)
             
         genai.configure(api_key=api_key)
-        
-        # Modello Gemini
         self.model = genai.GenerativeModel('models/gemini-2.5-flash')
 
         try:
@@ -54,7 +56,7 @@ class VoiceInterface(Node):
             self.recognizer.adjust_for_ambient_noise(source, duration=2.0)
             
         self.get_logger().info(f"✅ Pronti. Soglia: {self.recognizer.energy_threshold:.0f}")
-        self.get_logger().info("ℹ️  Logica: 'Pippo' -> Audio a Gemini.")
+        self.get_logger().info("ℹ️  Comandi: 'Pippo [azione]' o 'Pippo Stop'")
 
         self.recognizer.dynamic_energy_threshold = True
         self.recognizer.pause_threshold = 0.6 
@@ -63,27 +65,24 @@ class VoiceInterface(Node):
         self.is_processing = False
 
     def send_audio_to_gemini(self, audio_data):
-        self.get_logger().info("📤 Invio AUDIO GREZZO a Gemini 2.5...")
+        self.get_logger().info("📤 Analisi comando Gemini...")
         try:
             wav_bytes = audio_data.get_wav_data(convert_rate=16000, convert_width=2)
             
-            # --- MODIFICA AGGIORNATA: NUOVI LUOGHI ---
             prompt = """
-            Ascolta questo audio e classifica l'intento per la navigazione del robot.
+            Ascolta l'audio e classifica l'intento per il robot.
             
-            Regole TASSATIVE:
             1. Ignora la parola "Pippo".
-            2. Classifica i comandi in base alla destinazione richiesta:
-               - "Letto", "Bed" -> VIENI_LETTO
-               - "Base", "Ricarica", "Home" -> TORNA_BASE
-               - "Divano", "Sofa" -> VAI_DIVANO
-               - "Bagno", "Toilette", "WC" -> VAI_BAGNO
-               - "Cucina", "Kitchen" -> VAI_CUCINA
-               
-            3. Se la richiesta è generica (es. "vieni qui", "avvicinati") o non chiara -> NULL.
+            2. Se senti "Stop", "Fermati", "Basta", "Spegni" -> output STOP_NODO.
+            3. Altrimenti classifica la destinazione:
+               - Letto -> VIENI_LETTO
+               - Base/Home -> TORNA_BASE
+               - Divano -> VAI_DIVANO
+               - Bagno -> VAI_BAGNO
+               - Cucina -> VAI_CUCINA
             
-            Restituisci SOLO JSON:
-            { "detected_language": "codice", "command": "VIENI_LETTO" | "TORNA_BASE" | "VAI_DIVANO" | "VAI_BAGNO" | "VAI_CUCINA" | "NULL" }
+            Output JSON TASSATIVO:
+            { "command": "VIENI_LETTO" | "TORNA_BASE" | "VAI_DIVANO" | "VAI_BAGNO" | "VAI_CUCINA" | "STOP_NODO" | "NULL" }
             """
             
             response = self.model.generate_content(
@@ -95,7 +94,7 @@ class VoiceInterface(Node):
             return json.loads(cleaned)
 
         except Exception as e:
-            self.get_logger().error(f"❌ Errore Gemini Audio: {e}")
+            self.get_logger().error(f"❌ Errore Gemini: {e}")
             return None
 
     def listen_loop(self):
@@ -104,76 +103,59 @@ class VoiceInterface(Node):
         with self.microphone as source:
             try:
                 self.is_processing = True
-                
                 try:
-                    audio_clip = self.recognizer.listen(source, timeout=1.0, phrase_time_limit=6)
+                    audio_clip = self.recognizer.listen(source, timeout=1.0, phrase_time_limit=5)
                 except sr.WaitTimeoutError:
                     return 
 
-                # Riconoscimento preliminare offline/rapido per la wake word
                 try:
                     rough_text = self.recognizer.recognize_google(audio_clip, language="it-IT").lower()
-                except sr.UnknownValueError:
-                    return 
-                except sr.RequestError:
+                except:
                     return
 
                 wake_words = ["pippo", "pipo", "peppo", "pippa", "people", "tipo", "ehi"]
                 
                 if any(w in rough_text for w in wake_words):
-                    self.get_logger().info(f"✅ Trigger attivato: '{rough_text}'")
+                    self.get_logger().info(f"✅ Trigger: '{rough_text}'")
                     
                     result = self.send_audio_to_gemini(audio_clip)
                     
                     if result:
                         cmd = result.get("command", "NULL")
-                        lang = result.get("detected_language", "?")
                         msg = String()
                         
-                        # Gestione Comandi Aggiornata
-                        if cmd == "VIENI_LETTO":
-                            msg.data = "vieni_letto"
-                            self.publisher_.publish(msg)
-                            self.get_logger().info(f"🚑 [Gemini]: Destinazione LETTO")
+                        if cmd == "STOP_NODO":
+                            self.get_logger().warn("🛑 COMANDO 'STOP' RICEVUTO. ARRESTO...")
+                            raise SystemExit # Esce dal loop e va al blocco try/except del main
                             
-                        elif cmd == "TORNA_BASE":
-                            msg.data = "torna_base"
+                        elif cmd != "NULL":
+                            msg.data = cmd.lower()
                             self.publisher_.publish(msg)
-                            self.get_logger().info(f"🏠 [Gemini]: Destinazione BASE")
-
-                        elif cmd == "VAI_DIVANO":
-                            msg.data = "vai_divano"
-                            self.publisher_.publish(msg)
-                            self.get_logger().info(f"🛋️ [Gemini]: Destinazione DIVANO")
-
-                        elif cmd == "VAI_BAGNO":
-                            msg.data = "vai_bagno"
-                            self.publisher_.publish(msg)
-                            self.get_logger().info(f"🚽 [Gemini]: Destinazione BAGNO")
-
-                        elif cmd == "VAI_CUCINA":
-                            msg.data = "vai_cucina"
-                            self.publisher_.publish(msg)
-                            self.get_logger().info(f"🍳 [Gemini]: Destinazione CUCINA")
-
+                            self.get_logger().info(f"🚀 Comando: {cmd}")
                         else:
-                            self.get_logger().info(f"✋ [Gemini]: Comando ignorato/generico ({cmd})")
+                            self.get_logger().info("🤷 Comando non chiaro.")
                 
+            except SystemExit:
+                raise
             except Exception as e:
-                self.get_logger().error(f"Loop crash: {e}")
+                self.get_logger().error(f"Loop error: {e}")
             finally:
                 self.is_processing = False
 
 def main(args=None):
     rclpy.init(args=args)
     node = VoiceInterface()
+    
     try:
         rclpy.spin(node)
+    except SystemExit:
+        node.get_logger().info("👋 Nodo terminato vocalmente.")
     except KeyboardInterrupt:
         pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
