@@ -118,7 +118,7 @@ class GoalNavigation(Node):
         self.move_status_publisher.publish(msg)
 
         # Attivazione logica pulsante/interazione (opzionale)
-        button(True) 
+        button(False) 
         
         self.get_logger().info('In attesa del prossimo comando vocale...')
 
